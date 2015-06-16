@@ -17,7 +17,7 @@ FUZZIFY x
 END_FUZZIFY
 
 FUZZIFY y
-    TERM tooSouth := (0,0) (0.8,1) (1,1) (1.5,0);
+    TERM tooSouth := (0.5,0) (0.8,1) (1,1) (1.5,0);
     TERM notTooSouth := (0,1) (0.8,0);
 END_FUZZIFY
 
@@ -52,9 +52,9 @@ RULEBLOCK Block1
     
     RULE 3 : IF x IS left AND actualAngle IS north_west THEN turnAmount IS center;
     
-    RULE 4 : IF x IS left AND actualAngle IS west THEN turnAmount IS center;
+    RULE 4 : IF x IS left AND actualAngle IS west AND y IS notTooSouth THEN turnAmount IS center;
     
-    RULE 5 : IF x IS left AND actualAngle IS east THEN turnAmount IS right;
+    RULE 5 : IF x IS left AND actualAngle IS east AND y IS notTooSouth THEN turnAmount IS right;
     
     RULE 6 : IF x IS left AND actualAngle IS south THEN turnAmount IS left;
     
@@ -76,15 +76,16 @@ RULEBLOCK Block1
     
     RULE 14 : IF x IS right AND actualAngle IS north_west THEN turnAmount IS left;
     
-    RULE 15 : IF x IS right AND actualAngle IS west THEN turnAmount IS right;
+    RULE 15 : IF x IS right AND actualAngle IS west AND y IS notTooSouth THEN turnAmount IS right;
     
-    RULE 16 : IF x IS right AND actualAngle IS east THEN turnAmount IS right;
+    RULE 16 : IF x IS right AND actualAngle IS east AND y IS notTooSouth THEN turnAmount IS right;
     
     RULE 17 : IF x IS right AND actualAngle IS south THEN turnAmount IS right;
     
-//    RULE 19 : IF y IS tooSouth AND x IS left THEN turnAmount IS right;
-//    
-//    RULE 20 : IF y IS tooSouth AND x IS right THEN turnAmount IS left;
+    RULE 19 : IF y IS tooSouth AND actualAngle IS east THEN turnAmount IS left;
+    
+    RULE 20 : IF y IS tooSouth AND actualAngle IS west THEN turnAmount IS right;
+    
     
 END_RULEBLOCK
 
