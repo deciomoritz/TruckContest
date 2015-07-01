@@ -20,13 +20,10 @@ turn = str2double(turn)
 hold on;
 grid on
 plot3(x,angle,turn,'*');
-
-dataset = [x; y; angle; turn;]
-
 %%fucking ugly data, holy shit
 
 %%
 %%train the gooddamned net!
 
-nftool
+nnstart
 %%
