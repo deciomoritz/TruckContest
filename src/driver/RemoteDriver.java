@@ -2,11 +2,15 @@ package driver;
 
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 import net.sourceforge.jFuzzyLogic.FIS;
@@ -22,6 +26,11 @@ public class RemoteDriver {
         Socket kkSocket = null;
         PrintWriter out = null;
         BufferedReader in = null;
+        
+        ArrayList<Double> xVal = new ArrayList<>();
+        ArrayList<Double> yVal = new ArrayList<>();
+        ArrayList<Double> angleVal = new ArrayList<>();
+        ArrayList<Double> turnVal = new ArrayList<>();
 
         try {
             kkSocket = new Socket(host, port);
@@ -51,7 +60,7 @@ public class RemoteDriver {
         	y = Double.valueOf(st.nextToken()).doubleValue();
         	angle = Double.valueOf(st.nextToken()).doubleValue();
 
-        	System.out.println("x: " + x + " y: " + y + " angle: " + angle);
+//        	System.out.println("x: " + x + " y: " + y + " angle: " + angle);
         	
         	/////////////////////////////////////////////////////////////////////////////////////
         	// TODO sua lógica fuzzy vai aqui use os valores de x,y e angle obtidos. x e y estao em [0,1] e angulo [0,360)
@@ -66,7 +75,11 @@ public class RemoteDriver {
 			fis.evaluate();
 			
 			Variable angleVariable = fis.getVariable("turnAmount");
-			System.out.println(angleVariable.getValue());
+
+			xVal.add(x);
+			yVal.add(y);
+			angleVal.add(angle);
+			turnVal.add(angleVariable.getValue());
 			
         	double teste = angleVariable.getValue();
         	
@@ -80,9 +93,31 @@ public class RemoteDriver {
         	out.println("r");	
         }
  
+        writeData(xVal.toString(), "x.txt");
+        writeData(yVal.toString(), "y.txt");
+        writeData(angleVal.toString(), "angle.txt");
+        writeData(turnVal.toString(), "turn.txt");
+        
         out.close();
         in.close();
         stdIn.close();
         kkSocket.close();
+    }
+    
+    private static void writeData(String data, String fileName){
+		try {
+			File file = new File(fileName); 
+			if (!file.exists()) {
+				file.createNewFile();
+			}
+ 
+			BufferedWriter bw = new BufferedWriter(new FileWriter(file,true));
+			data = data.substring(1, data.length()-1);
+			bw.append(data);
+			bw.close();
+ 
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
     }
 }
