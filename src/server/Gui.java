@@ -1,6 +1,8 @@
 package server;
 import java.awt.*;
 import java.awt.event.*;
+import java.text.DecimalFormat;
+import java.util.Random;
 
 import javax.swing.*;
 
@@ -76,9 +78,12 @@ public class Gui extends JFrame {
 		separator1 = new JSeparator();
 		CellConstraints cc = new CellConstraints();
 
-		xisValue.setText("0.2");
-		ypsolonValue.setText("0.2");
-		anguloValue.setText("30");
+		String variavelX = new DecimalFormat("#.#").format(new Random().nextDouble()).toString();
+		String variavelY = new DecimalFormat("#.#").format(new Random().nextDouble()).toString();
+		String variavelAngulo = new Random().nextInt(360) + "";
+		xisValue.setText(variavelX);
+		ypsolonValue.setText(variavelY);
+		anguloValue.setText(variavelAngulo);
 		stepValue.setText("1");
 		
 		setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -168,6 +173,9 @@ public class Gui extends JFrame {
 		buttonExecutar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				buttonExecutarActionPerformed(e);
+				xisValue.setText(new DecimalFormat("#.#").format(new Random().nextDouble()).toString());
+				ypsolonValue.setText(new DecimalFormat("#.#").format(new Random().nextDouble()).toString());
+				anguloValue.setText(new Random().nextInt(360) + "");
 			}
 		});
 		contentPane.add(buttonExecutar, cc.xywh(3, 7,3,1));

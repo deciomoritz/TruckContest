@@ -1,0 +1,92 @@
+FUNCTION_BLOCK truck
+
+VAR_INPUT
+    x : REAL;
+    y : REAL;
+    actualAngle : REAL;
+END_VAR
+
+VAR_OUTPUT
+    turnAmount : REAL;
+END_VAR
+
+FUZZIFY x
+    TERM left := (-0.5, 0) (-0.25, 1) (0.25, 1) (0.5,0);
+    TERM middle := (0.25, 0) (0.45, 1) (0.55, 1) (0.75,0);
+    TERM right := (0.5,0) (0.75,1) (1.25,1) (1.5,0);
+END_FUZZIFY
+
+FUZZIFY y
+    TERM tooSouth := (0.5,0) (0.8,1) (1,1) (1.5,0);
+    TERM notTooSouth := (0,1) (0.8,0);
+END_FUZZIFY
+
+FUZZIFY actualAngle
+	TERM south_west := (180, 0) (225, 1) (270, 0);
+	TERM west := (135, 0) (180, 1) (225, 0);
+	TERM north_west := (90, 0) (135, 1) (180, 0);
+	TERM south := (225, 0) (245, 1) (295, 1) (325, 0);
+	TERM south_east :=  (0, 0) (270, 0) (315, 1) (360, 0);
+	TERM east := (0, 1) (45, 0) (325, 0) (360, 1);
+	TERM north_east:= (0, 0) (45, 1) (90, 0) (360, 0);
+	TERM north := (45, 0) (90, 1) (135, 0);
+END_FUZZIFY
+
+DEFUZZIFY turnAmount
+    TERM left := (-1.5, 0) (-1.5, 1) (0, 0);
+    TERM right := (0, 0) (1.5, 1) (1.5, 0);
+    TERM center := (-0.25, 0) (0, 0.2) (0.25, 0);
+    METHOD : COG;
+    DEFAULT := 0.1;
+END_DEFUZZIFY
+
+RULEBLOCK Block1
+    AND : MIN;
+    ACT : MIN;
+    ACCU : MAX;
+    OR : MAX;
+    
+    RULE 1 : IF x IS left AND actualAngle IS north THEN turnAmount IS right;
+    
+    RULE 2 : IF x IS left AND actualAngle IS north_east THEN turnAmount IS right;
+    
+    RULE 3 : IF x IS left AND actualAngle IS north_west THEN turnAmount IS center;
+    
+    RULE 4 : IF x IS left AND actualAngle IS west AND y IS notTooSouth THEN turnAmount IS center;
+    
+    RULE 5 : IF x IS left AND actualAngle IS east AND y IS notTooSouth THEN turnAmount IS right;
+    
+    RULE 6 : IF x IS left AND actualAngle IS south THEN turnAmount IS left;
+    
+    RULE 7 : IF x IS middle AND actualAngle IS north THEN turnAmount IS center;
+    
+    RULE 8 : IF x IS middle AND actualAngle IS north_west THEN turnAmount IS left;
+    
+    RULE 9 : IF x IS middle AND actualAngle IS north_east THEN turnAmount IS right;
+    
+    RULE 10 : IF x IS middle AND actualAngle IS west THEN turnAmount IS left;
+    
+    RULE 11 : IF x IS middle AND actualAngle IS east THEN turnAmount IS right;
+    
+    RULE 18 : IF x IS middle AND actualAngle IS south THEN turnAmount IS center;
+    
+    RULE 12 : IF x IS right AND actualAngle IS north THEN turnAmount IS left;
+    
+    RULE 13 : IF x IS right AND actualAngle IS north_east THEN turnAmount IS center;
+    
+    RULE 14 : IF x IS right AND actualAngle IS north_west THEN turnAmount IS left;
+    
+    RULE 15 : IF x IS right AND actualAngle IS west AND y IS notTooSouth THEN turnAmount IS right;
+    
+    RULE 16 : IF x IS right AND actualAngle IS east AND y IS notTooSouth THEN turnAmount IS right;
+    
+    RULE 17 : IF x IS right AND actualAngle IS south THEN turnAmount IS right;
+    
+    RULE 19 : IF y IS tooSouth AND actualAngle IS east THEN turnAmount IS left;
+    
+    RULE 20 : IF y IS tooSouth AND actualAngle IS west THEN turnAmount IS right;
+    
+    
+END_RULEBLOCK
+
+END_FUNCTION_BLOCK
